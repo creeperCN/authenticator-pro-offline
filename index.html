@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TOTP Generator</title>
+  <link rel="stylesheet" href="css/bulma-0.7.1.min.css">
+  <style>
+    @media screen and (min-width: 1068px) {
+      .container {
+        max-width: 600px;
+        width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section id="app" class="container">
+
+    <div class="section">
+      <div class="modal" id="qrModal">
+        <div class="modal-background" onclick="closeModal()"></div>
+        <div class="modal-content">
+          <div class="box">
+            <div id="qrcode"></div>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="closeModal()"></button>
+      </div>
+
+      <h1 class="title">Authenticator Pro Backup Reader</h1>
+      <article class="message is-info" id="disclaimer">
+        <div class="message-header">
+          <p>Privacy Notice</p>
+          <button onclick="document.getElementById('disclaimer').remove('is-active')" class="delete" aria-label="delete"></button>
+        </div>
+        <div class="message-body">
+          You can use this site to decrypt your OTP code backups safe in the know that no data will leave your computer. This uses JavaScript libraries to decrypt the backup locally, using your local computer's CPU. Please feel free to check out the source code in the links in the footer.
+        </div>
+      </article>
+      <p style="font-weight:bold;line-height: 3;">Your encrypted Authenticator Pro file</p>
+
+      <div class="file has-name" id="fileDiv">
+        <label class="file-label">
+          <input class="file-input" type="file" name="resume" id="iptFile">
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+              Choose a file…
+            </span>
+          </span>
+          <span class="file-name">
+            No file chosen
+          </span>
+        </label>
+      </div>
+
+      <br>
+      
+      <div class="field">
+        <label class="label">Decryption Password</label>
+        <div class="control">
+          <input v-on:keyup.enter="decrypt" class="input" type="password" placeholder="Password" id="iptPassword" disabled>
+        </div>
+      </div>
+
+      <div class="columns is-mobile">
+        <div class="column">
+          <div class="field">
+            <button class="button" type="submit" id="btnDecrypt" onclick='decrypt()' disabled>Decrypt</button>
+          </div>
+        </div>
+        <div class="field is-grouped">
+          <div class="column">
+            <button class="button" type="submit" id="btnShow" onclick='toggleContent()' disabled>Show JSON</button>
+          </div>
+          <div class="column">
+            <button class="button" type="submit" id="btnDownload" onclick='downloadPlain()' disabled>Download</button>
+          </div>
+        </div>
+      </div>
+      
+      <br>
+      
+      <div class="box" id="content" style="display:none;">
+        <pre id="json_box"></pre>        
+      </div>
+      
+      <div class="">
+        <otp-entry v-for="(item, index) in tokens" :index="index" :item="item" :key="item.label"></otp-entry>
+      </div>
+    </div>
+
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>Mashed together by <a href="https://github.com/christovic">Dan Christovic</a>. Source on <a href="https://github.com/christovic/authenticator-pro-offline">Github</a>.</p>
+        <br>
+        <p>Decryption logic from <a href="https://github.com/flocke">Jakob Nixdorf</a>. Source on <a href="https://github.com/andOTP/WebDecrypt">Github</a>.</p>
+        <br>
+        <p>Generator from <a href="https://dan.hersam.com">Dan Hersam</a>. Source on <a href="https://github.com/jaden/totp-generator">Github</a>.</p>
+        <p>
+          <a class="icon" href="https://github.com/jgthms/bulma">
+            <i class="fa fa-github"></i>
+          </a>
+        </p>
+      </div>
+    </div>
+  </footer>
+  <script src="js/qrcode.js"></script>
+  <script src="node_modules/argon2-browser/lib/argon2.js"></script>
+  <script src="js/vue-2.4.0.min.js"></script>
+  <script src="js/otpauth-3.1.3.min.js"></script>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    const fileInput = document.querySelector('#fileDiv input[type=file]');
+    fileInput.onchange = () => {
+      openFile(event)
+      if (fileInput.files.length > 0) {
+        const fileName = document.querySelector('#fileDiv .file-name');
+        fileName.textContent = fileInput.files[0].name;
+      }
+    }
+  </script>
+
+</body>
+</html>
