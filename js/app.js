@@ -157,7 +157,6 @@ function openFile(event) {
 async function decrypt() {
     var pw = document.getElementById("iptPassword");
     password = pw.value;
-    console.log(legacy)
     var encryptionType;
     if (legacy) {
       encryptionType = "AES-CBC";
@@ -189,7 +188,6 @@ async function decrypt() {
       })
       key = await window.crypto.subtle.importKey("raw", key.hash, 'AES-GCM', true, ["decrypt"]);
     } 
-    console.log(key);
     let decryptSuccess = true;
     let decrypted = await window.crypto.subtle.decrypt(
         {
@@ -203,7 +201,6 @@ async function decrypt() {
         console.error(err);
         decryptSuccess = false;
     })
-    console.log(decryptSuccess);
     if (decryptSuccess) {
         document.getElementById("iptPassword").classList.remove("is-danger")
         document.getElementById("iptPassword").classList.add("is-primary")
