@@ -1,4 +1,4 @@
-# [authenticator-pro-offline](https://christovic.github.io/andotp-offline)
+# [authenticator-pro-offline](https://christovic.github.io/authenticator-pro-offline)
 
 ### A utility to read and use decrypted backups from [Authenticator Pro](https://github.com/jamie-mh/AuthenticatorPro) to create OTP codes without the app itself.
 
